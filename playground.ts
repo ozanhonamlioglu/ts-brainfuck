@@ -79,3 +79,38 @@ type FindMax<A, B, C extends 0[] = []> = C["length"] extends A
 type Test6 = FindMax<8, 24>; // -> 24;
 
 // ---------------------------------------------------------------------------------------------------
+/**
+ * Add
+ */
+ type Count<I, O extends 0[] = []> = O["length"] extends I ? O : Count<I, [...O, 0]>
+ type Add<A, B> = [...Count<A>, ...Count<B>]["length"]
+
+ type Dec<A> = Count<A> extends [infer A, ...infer Tail] ? Tail["length"] : 0;
+ type Inc<A> = [...Count<A>, 0]["length"]
+ 
+type Subtract<A, B> = B extends 0 ? A : Subtract<Dec<A>, Dec<B>>;
+
+ type Test7 = Add<3, 24>;
+ type Test8 = Subtract<5, 3>;
+
+// ---------------------------------------------------------------------------------------------------
+/**
+ * Multiply
+ */
+
+/* type Multiply<A, B, C extends 0[] = [], T extends 0[] = []> = T["length"] extends A 
+? C["length"]
+: Multiply<A, B, [...C, ...Count<B>], [0, ...T]> */
+
+type Multiply<A, B, R = 0> = A extends 0 ? R : Multiply<Dec<A>, B, Add<R, B>>
+
+type Test9 = Multiply<2, 19>
+
+// ---------------------------------------------------------------------------------------------------
+/**
+ * Divide
+ */
+
+type Divide<A, B, R = 0> = A extends 0 ? R : Divide<Subtract<A, B>, B, Inc<R>>
+
+type Test10 = Divide<12, 5>
